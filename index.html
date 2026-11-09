@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina de la papeleria</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Coste de Copias</title>
+   
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Copias</h1>
+        <p class="subtitle">Calcula el coste según cantidad y tipo</p>
+
+        <div class="form-group">
+            <label for="cantidad">Número de copias</label>
+            <input type="number" id="cantidad" min="1" value="1" placeholder="Ej: 75">
+        </div>
+
+        <div class="form-group">
+            <label for="tipo">Tipo de copia</label>
+            <select id="tipo">
+                <option value="color">A color</option>
+                <option value="bn">Blanco y negro</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>¿Es alumno?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="alumno">
+                <label for="alumno" style="margin:0; font-weight:500;">Sí, y muestra su credencial (25% de descuento)</label>
+            </div>
+        </div>
+
+        <button class="btn" onclick="calcular()">Calcular coste</button>
+
+        <div class="resultado" id="resultado">
+            <h3>Resumen del cálculo</h3>
+            <div class="detalle" id="detalle"></div>
+            <div class="total" id="total"></div>
+        </div>
+
+        <div class="tarifas">
+            <strong>Tarifas actuales:</strong><br>
+            • 1–50 copias → Color: 1,50 € | B/N: 1,00 €<br>
+            • 51–100 copias → Color: 1,30 € | B/N: 0,80 €<br>
+            • Más de 100 → Color: 1,00 € | B/N: 0,50 €<br>
+            • Alumnos con credencial: <span class="descuento">25% de descuento</span>
+        </div>
+    </div>
+
+    <script>
+        function calcular() {
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+            const tipo = document.getElementById('tipo').value;
+            const esAlumno = document.getElementById('alumno').checked;
+            const resultadoDiv = document.getElementById('resultado');
+            const detalle = document.getElementById('detalle');
+            const total = document.getElementById('total');
+
+            // Validación
+            if (isNaN(cantidad) || cantidad < 1) {
+                alert('Por favor, introduce un número válido de copias (mínimo 1).');
+                return;
+            }
+
+            // Determinar precio unitario según tramo
+            let precioUnitario;
+            let tramo;
+
+            if (cantidad <= 50) {
+                precioUnitario = (tipo === 'color') ? 1.50 : 1.00;
+                tramo = '1–50 copias';
+            } else if (cantidad <= 100) {
+                precioUnitario = (tipo === 'color') ? 1.30 : 0.80;
+                tramo = '51–100 copias';
+            } else {
+                precioUnitario = (tipo === 'color') ? 1.00 : 0.50;
+                tramo = 'Más de 100 copias';
+            }
+
+            // Cálculo base
+            let subtotal = cantidad * precioUnitario;
+            let descuento = 0;
+            let totalFinal = subtotal;
+
+            if (esAlumno) {
+                descuento = subtotal * 0.25;
+                totalFinal = subtotal - descuento;
+            }
+
+            // Mostrar resultado
+            let textoDetalle = `
+                <strong>Cantidad:</strong> ${cantidad} copias<br>
+                <strong>Tipo:</strong> ${tipo === 'color' ? 'A color' : 'Blanco y negro'}<br>
+                <strong>Tramo aplicado:</strong> ${tramo}<br>
+                <strong>Precio unitario:</strong> ${precioUnitario.toFixed(2)} €<br>
+                <strong>Subtotal:</strong> ${subtotal.toFixed(2)} €
+            `;
+
+            if (esAlumno) {
+                textoDetalle += `<br><span class="descuento"><strong>Descuento alumno (25%):</strong> −${descuento.toFixed(2)} €</span>`;
+            }
+
+            detalle.innerHTML = textoDetalle;
+            total.innerHTML = `Total a pagar: ${totalFinal.toFixed(2)} €`;
+            resultadoDiv.classList.add('visible');
+        }
+
+        // Calcular automáticamente al cambiar valores (opcional)
+        document.getElementById('cantidad').addEventListener('input', function() {
+            if (this.value > 0) calcular();
+        });
+        document.getElementById('tipo').addEventListener('change', calcular);
+        document.getElementById('alumno').addEventListener('change', calcular);
+    </script>
+</body>
+</html>
+</html>
